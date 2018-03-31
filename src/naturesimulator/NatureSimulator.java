@@ -38,6 +38,7 @@ public class NatureSimulator extends GridGame {
     protected void timerTick() {
         // Determine and execute actions for all creatures
         ArrayList<Creature> creaturesCopy = new ArrayList<>(creatures);
+
         for (Creature creature : creaturesCopy) {
             if (creature.getHealth() <= 0.0) {
                 // Creature is dead, hence continue with the next creature
@@ -109,6 +110,7 @@ public class NatureSimulator extends GridGame {
                 return false;
             }
         }
+
         return false;
     }
 

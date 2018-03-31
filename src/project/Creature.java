@@ -8,7 +8,7 @@ import ui.GridPanel;
 
 import java.awt.*;
 
-public class Creature implements Drawable {
+abstract public class Creature implements Drawable {
 
     protected Color color;
 
@@ -16,45 +16,22 @@ public class Creature implements Drawable {
 
     protected int x, y;
 
-    private double health = 10;
+    protected double max_health;
 
-    public Creature(int x, int y)
-    {
-        this.x = x;
-
-        this.y = y;
-    }
+    private double health;
 
     public void draw(GridPanel panel)
     {
         panel.drawSquare(x, y, this.color);
     }
 
-    public Action chooseAction(LocalInformation information)
-    {
-        Direction direction = LocalInformation.getRandomDirection(information.getFreeDirections());
+    abstract public Action chooseAction(LocalInformation information);
 
-        Action action = this instanceof  Herbivore ? new Action(Action.Type.REPRODUCE, direction): new Action(Action.Type.STAY);
+    abstract public void attack(Creature attackedCreature);
 
-        return action;
-    }
+    abstract public void move(Direction direction);
 
-    public void attack(Creature attackedCreature)
-    {
-
-    }
-
-    public void move(Direction direction)
-    {
-
-    }
-
-    public Creature reproduce(Direction direction)
-    {
-        this.setHealth(this.getHealth() * this.reproduced_health_point);
-
-        return this.createAndMoveChild(direction);
-    }
+    abstract public Creature reproduce(Direction direction);
 
     public void stay()
     {
@@ -64,11 +41,6 @@ public class Creature implements Drawable {
     public double getHealth()
     {
         return this.health;
-    }
-
-    public void setHealth(double health)
-    {
-        this.health = health;
     }
 
     public int getX()
@@ -81,8 +53,33 @@ public class Creature implements Drawable {
         return this.y;
     }
 
-    protected Creature createAndMoveChild(Direction direction)
+    public void setHealth(double health)
     {
-        return null;
+        this.health = this.max_health >= health ? health : this.max_health;
+    }
+
+    protected Creature reproduceAndMoveChild(Creature born, Direction direction)
+    {
+        born.setHealth(this.getHealth()  * this.reproduced_child_health_point);
+
+        born.moveToDirection(direction);
+
+        return born;
+    }
+
+    protected void moveToDirection(Direction direction)
+    {
+        if (direction == Direction.DOWN) {
+            this.y++;
+        }
+        else if(direction == Direction.UP) {
+            this.y--;
+        }
+        else if(direction == Direction.LEFT) {
+            this.x--;
+        }
+        else if(direction == Direction.RIGHT) {
+            this.x++;
+        }
     }
 }

@@ -29,10 +29,10 @@ public class Main {
             try {
                 // Create game
                 // You can change the world width and height, size of each grid square in pixels or the game speed
-                NatureSimulator game = new NatureSimulator(50, 50, 10, 60);
+                NatureSimulator game = new NatureSimulator(50, 50, 10, 120);
 
                 // Create and add plants
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 1000; i++) {
                     int x = (int) (Math.random() * game.getGridWidth());
                     int y = (int) (Math.random() * game.getGridHeight());
                     game.addCreature(new Plant(x, y));

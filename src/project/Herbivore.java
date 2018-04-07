@@ -17,7 +17,7 @@ public class Herbivore extends Creature {
 
         this.y = y;
 
-        this.color = new Color(255, 200, 0);
+        this.color = new Color(255, 100, 100);
 
         this.max_health = 20.;
 
@@ -28,27 +28,6 @@ public class Herbivore extends Creature {
         this.reproduced_health_point = .4;
 
         this.reproduced_child_health_point = .2;
-    }
-
-    @Override
-    public Action chooseAction(LocalInformation information) {
-
-        Direction direction = LocalInformation.getRandomDirection(information.getFreeDirections());
-
-        if(this.shouldReproduce(information)) {
-
-            return new Action(Action.Type.REPRODUCE, direction);
-        }
-        else if(this.shouldAttack(information)) {
-
-            return new Action(Action.Type.ATTACK, this.findAttackDirection(information));
-        }
-        else if(this.shouldMove(information)) {
-
-            return new Action(Action.Type.MOVE, direction);
-        }
-
-        return new Action(Action.Type.STAY);
     }
 
     @Override
@@ -72,8 +51,8 @@ public class Herbivore extends Creature {
     }
 
     @Override
-    public Creature reproduce(Direction direction) {
-
+    public Creature reproduce(Direction direction)
+    {
         Creature child = this.reproduceAndMoveChild(new Herbivore(this.x, this.y), direction);
 
         this.setHealth(this.getHealth() * this.reproduced_health_point);
@@ -81,52 +60,47 @@ public class Herbivore extends Creature {
         return child;
     }
 
-    private boolean shouldReproduce(LocalInformation information)
+    @Override
+    protected boolean shouldReproduce(LocalInformation information)
     {
         return this.getHealth() == this.max_health && !information.getFreeDirections().isEmpty();
     }
 
-    private boolean shouldMove(LocalInformation information) {
+    @Override
+    protected boolean shouldMove(LocalInformation information)
+    {
 
-        return this.getHealth() - this.move_point > 0 && !information.getFreeDirections().isEmpty();
+        return this.getHealth() + this.move_point > 0 && !information.getFreeDirections().isEmpty();
     }
 
-    private Direction findAttackDirection(LocalInformation information) {
+    @Override
+    protected boolean shouldAttack(LocalInformation information)
+    {
 
+        return this.findAttackDirection(information) != null;
+    }
+
+    @Override
+    protected Direction findAttackDirection(LocalInformation information)
+    {
         ArrayList<Direction> directions = new ArrayList<>();
-
 
         if(information.getCreatureDown() instanceof Plant) {
             directions.add(Direction.DOWN);
         }
+
         if (information.getCreatureLeft() instanceof Plant) {
             directions.add(Direction.LEFT);
         }
+
         if (information.getCreatureRight() instanceof Plant) {
             directions.add(Direction.RIGHT);
         }
+
         if (information.getCreatureUp() instanceof Plant) {
             directions.add(Direction.UP);
         }
 
         return LocalInformation.getRandomDirection(directions);
-    }
-
-    private boolean shouldAttack(LocalInformation information) {
-
-        if(information.getCreatureDown() instanceof Plant) {
-            return true;
-        }
-        else if (information.getCreatureLeft() instanceof Plant) {
-            return true;
-        }
-        else if (information.getCreatureRight() instanceof Plant) {
-            return true;
-        }
-        else if (information.getCreatureUp() instanceof Plant) {
-            return true;
-        }
-
-        return false;
     }
 }

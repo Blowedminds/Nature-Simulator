@@ -13,7 +13,7 @@ public class Plant extends Creature {
 
         this.y = y;
 
-        this.color = new Color(0, 13, 32);
+        this.color = new Color(100, 255, 100);
 
         this.max_health = 1.;
 
@@ -27,30 +27,20 @@ public class Plant extends Creature {
     }
 
     @Override
-    public Action chooseAction(LocalInformation information) {
-
-        Direction direction = LocalInformation.getRandomDirection(information.getFreeDirections());
-
-        if(this.shouldReproduce(direction)) {
-
-            return new Action(Action.Type.REPRODUCE, direction);
-        }
-
-        return new Action(Action.Type.STAY);
-    }
-
-    @Override
-    public void attack(Creature attackedCreature) {
+    public void attack(Creature attackedCreature)
+    {
 
     }
 
     @Override
-    public void move(Direction direction) {
+    public void move(Direction direction)
+    {
 
     }
 
     @Override
-    public Creature reproduce(Direction direction) {
+    public Creature reproduce(Direction direction)
+    {
 
         Creature child = this.reproduceAndMoveChild(new Plant(this.x, this.y), direction);
 
@@ -59,8 +49,27 @@ public class Plant extends Creature {
         return child;
     }
 
-    private boolean shouldReproduce(Direction direction)
+    @Override
+    protected boolean shouldAttack(LocalInformation information)
     {
-        return this.getHealth() >= .75 && direction != null;
+        return false;
+    }
+
+    @Override
+    protected boolean shouldMove(LocalInformation information)
+    {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldReproduce(LocalInformation information)
+    {
+        return this.getHealth() >= .75 && !information.getFreeDirections().isEmpty();
+    }
+
+    @Override
+    protected Direction findAttackDirection(LocalInformation information)
+    {
+        return null;
     }
 }
